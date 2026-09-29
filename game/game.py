@@ -1,4 +1,4 @@
-import py5
+import py5   # ผมใช้ processing ใน vscode เลยต้องทำการ import library py5 ในการใช้งาน
 import random
 import os
 
