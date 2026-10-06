@@ -38,7 +38,10 @@ def init_game():
     board = []
     
     for y in range(GRID_ROWS):
-        row = [random.choice(COLORS) for _ in range(GRID_COLS)]
+        row = []
+        for x in range(GRID_COLS):
+            random_color = random.choice(COLORS)
+            row.append(random_color)
         board.append(row)
         
     target_final_color = random.choice(COLORS)
@@ -91,8 +94,9 @@ def load_game():
         save_status_timer = 60
 
 def spread(start_x, start_y, target_colour, new_colour):
-    if target_colour == new_colour: return
-    
+    if target_colour == new_colour: 
+        return
+
     stack = [(start_x, start_y)]
     while stack:
         x, y = stack.pop()
@@ -110,7 +114,8 @@ def check_win():
 
 def change_colour(start_x, start_y, new_colour):
     global moves_left, game_state, save_status_msg
-    if game_state != "PLAYING": return
+    if game_state != "PLAYING": 
+        return
     
     save_status_msg = ""
     old_colour = board[start_y][start_x]
@@ -169,22 +174,26 @@ def mouse_pressed():
         clicked_button = False
         
         # เช็คการคลิกปุ่มเลือกสีด้านล่าง
-        for i, color in enumerate(COLORS):
+        for i in range(len(COLORS)):
+            color = COLORS[i]
             cx = 70 + (i * 93)
             cy = 430
-            if abs(py5.mouse_x - cx) <= 25 and abs(py5.mouse_y - cy) <= 25:
+
+            if (cx - 25 <= py5.mouse_x <= cx + 25) and (cy - 25 <= py5.mouse_y <= cy + 25):
                 selected_color = color
-                clicked_button = True
                 save_status_msg = ""
-                break
+                return
                 
         # เช็คการคลิกบนตาราง (ถ้าเลือกสีแล้ว)
-        if not clicked_button and selected_color is not None:
-            if OFFSET_X <= py5.mouse_x < OFFSET_X + (GRID_COLS * CELL_SIZE) and \
-               OFFSET_Y <= py5.mouse_y < OFFSET_Y + (GRID_ROWS * CELL_SIZE):
-                grid_x = int((py5.mouse_x - OFFSET_X) / CELL_SIZE)
-                grid_y = int((py5.mouse_y - OFFSET_Y) / CELL_SIZE)
-                change_colour(grid_x, grid_y, selected_color)
+        if selected_color is not None:
+            board_width = GRID_COLS * CELL_SIZE
+            board_height = GRID_ROWS * CELL_SIZE
+        
+        if OFFSET_X <= py5.mouse_x < OFFSET_X + board_width:
+            if OFFSET_Y <= py5.mouse_y < OFFSET_Y + board_height:
+                # แปลงพิกเซลเป็นพิกัดช่อง (ใช้ // เพื่อหารเอาจำนวนเต็ม)
+                grid_x = (py5.mouse_x - OFFSET_X) // CELL_SIZE
+                grid_y = (py5.mouse_y - OFFSET_Y) // CELL_SIZE
     else:
         init_game()
 
