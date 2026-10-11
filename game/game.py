@@ -171,9 +171,8 @@ def key_pressed():
 def mouse_pressed():
     global selected_color, save_status_msg
     if game_state == "PLAYING":
-        clicked_button = False
         
-        # เช็คการคลิกปุ่มเลือกสีด้านล่าง
+        # 1. เช็คการคลิกปุ่มเลือกสีด้านล่าง
         for i in range(len(COLORS)):
             color = COLORS[i]
             cx = 70 + (i * 93)
@@ -184,16 +183,20 @@ def mouse_pressed():
                 save_status_msg = ""
                 return
                 
-        # เช็คการคลิกบนตาราง (ถ้าเลือกสีแล้ว)
+        # 2. เช็คการคลิกบนตาราง (ถ้ามีการเลือกสีไว้แล้ว)
         if selected_color is not None:
             board_width = GRID_COLS * CELL_SIZE
             board_height = GRID_ROWS * CELL_SIZE
-        
-        if OFFSET_X <= py5.mouse_x < OFFSET_X + board_width:
-            if OFFSET_Y <= py5.mouse_y < OFFSET_Y + board_height:
-                # แปลงพิกเซลเป็นพิกัดช่อง (ใช้ // เพื่อหารเอาจำนวนเต็ม)
-                grid_x = (py5.mouse_x - OFFSET_X) // CELL_SIZE
-                grid_y = (py5.mouse_y - OFFSET_Y) // CELL_SIZE
+            
+            # ต้องเอา if มาไว้ในบล็อก if selected_color is not None
+            if OFFSET_X <= py5.mouse_x < OFFSET_X + board_width:
+                if OFFSET_Y <= py5.mouse_y < OFFSET_Y + board_height:
+                    # แปลงพิกเซลเป็นพิกัดช่อง (ใช้ // เพื่อหารเอาจำนวนเต็ม)
+                    grid_x = (py5.mouse_x - OFFSET_X) // CELL_SIZE
+                    grid_y = (py5.mouse_y - OFFSET_Y) // CELL_SIZE
+                    
+                    change_colour(grid_x, grid_y, selected_color)
+                    
     else:
         init_game()
 
